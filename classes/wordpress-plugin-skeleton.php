@@ -1,20 +1,20 @@
 <?php
 
-if ( ! class_exists( 'WordPress_Plugin_Skeleton' ) ) {
+if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
 
 	/**
 	 * Main / front controller class
 	 *
 	 * WordPress_Plugin_Skeleton is an object-oriented/MVC base for building WordPress plugins
 	 */
-	class WordPress_Plugin_Skeleton extends WPPS_Module {
+	class WordPress_Content_Dialog extends WPCD_Module {
 		public static $notices;                              // Needs to be static so static methods can call enqueue notices. Needs to be public so other modules can enqueue notices.
 		protected static $readable_properties  = array();    // These should really be constants, but PHP doesn't allow class constants to be arrays
 		protected static $writeable_properties = array();
 		protected $modules;
 
-		const VERSION    = '0.4a';
-		const PREFIX     = 'wpps_';
+		const VERSION    = '0.1';
+		const PREFIX     = 'wpcd_';
 		const DEBUG_MODE = false;
 
 
@@ -31,9 +31,9 @@ if ( ! class_exists( 'WordPress_Plugin_Skeleton' ) ) {
 			$this->register_hook_callbacks();
 
 			$this->modules = array(
-				'WPPS_Settings'    => WPPS_Settings::get_instance(),
-				'WPPS_CPT_Example' => WPPS_CPT_Example::get_instance(),
-				'WPPS_Cron'        => WPPS_Cron::get_instance()
+				'WPCD_Settings'    => WPCD_Settings::get_instance(),
+				'WPCD_CPT_Example' => WPCD_CPT_Example::get_instance(),
+				'WPCD_Cron'        => WPCD_Cron::get_instance()
 			);
 		}
 
@@ -67,7 +67,7 @@ if ( ! class_exists( 'WordPress_Plugin_Skeleton' ) ) {
 			if ( is_admin() ) {
 				wp_enqueue_style( self::PREFIX . 'admin' );
 			} else {
-				wp_enqueue_script( self::PREFIX . 'wordpress-plugin-skeleton' );
+				wp_enqueue_script( self::PREFIX . 'wordpress-content-dialog' );
 			}
 		}
 
@@ -192,7 +192,7 @@ if ( ! class_exists( 'WordPress_Plugin_Skeleton' ) ) {
 			}
 
 			try {
-				$instance_example = new WPPS_Instance_Class( 'Instance example', '42' );
+				$instance_example = new WPCD_Instance_Class( 'Instance example', '42' );
 				//self::$notices->enqueue( $instance_example->foo .' '. $instance_example->bar );
 			} catch ( Exception $exception ) {
 				self::$notices->enqueue( __METHOD__ . ' error: ' . $exception->getMessage(), 'error' );
@@ -207,15 +207,15 @@ if ( ! class_exists( 'WordPress_Plugin_Skeleton' ) ) {
 		 * @param string $db_version
 		 */
 		public function upgrade( $db_version = 0 ) {
-			if ( version_compare( $this->modules['WPPS_Settings']->settings['db-version'], self::VERSION, '==' ) ) {
+			if ( version_compare( $this->modules['WPCD_Settings']->settings['db-version'], self::VERSION, '==' ) ) {
 				return;
 			}
 
 			foreach ( $this->modules as $module ) {
-				$module->upgrade( $this->modules['WPPS_Settings']->settings['db-version'] );
+				$module->upgrade( $this->modules['WPCD_Settings']->settings['db-version'] );
 			}
 
-			$this->modules['WPPS_Settings']->settings = array( 'db-version' => self::VERSION );
+			$this->modules['WPCD_Settings']->settings = array( 'db-version' => self::VERSION );
 			self::clear_caching_plugins();
 		}
 
