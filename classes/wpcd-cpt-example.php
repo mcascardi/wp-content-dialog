@@ -1,18 +1,18 @@
 <?php
 
-if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
+if ( ! class_exists( 'WPCD_CPT_Example' ) ) {
 
 	/**
 	 * Creates a custom post type and associated taxonomies
 	 */
-	class WPPS_CPT_Example extends WPPS_Module implements WPPS_Custom_Post_Type {
+	class WPCD_CPT_Example extends WPCD_Module implements WPCD_Custom_Post_Type {
 		protected static $readable_properties  = array();
 		protected static $writeable_properties = array();
 
-		const POST_TYPE_NAME = 'WPPS Custom Post Type';
-		const POST_TYPE_SLUG = 'wpps-cpt';
-		const TAG_NAME       = 'WPPS Custom Taxonomy';
-		const TAG_SLUG       = 'wpps-custom-tax';
+		const POST_TYPE_NAME = 'WPCD Custom Post Type';
+		const POST_TYPE_SLUG = 'wpcd-cpt';
+		const TAG_NAME       = 'WPCD Custom Taxonomy';
+		const TAG_SLUG       = 'wpcd-custom-tax';
 
 
 		/*
@@ -44,7 +44,7 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 				$post_type        = register_post_type( self::POST_TYPE_SLUG, $post_type_params );
 
 				if ( is_wp_error( $post_type ) ) {
-					WordPress_Plugin_Skeleton::$notices->enqueue( __METHOD__ . ' error: ' . $post_type->get_error_message(), 'error' );
+					WordPress_Content_Dialog::$notices->enqueue( __METHOD__ . ' error: ' . $post_type->get_error_message(), 'error' );
 				}
 			}
 		}
@@ -91,7 +91,7 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 				'supports'             => array( 'title', 'editor', 'author', 'thumbnail', 'revisions' )
 			);
 
-			return apply_filters( 'wpps_post-type-params', $post_type_params );
+			return apply_filters( 'wpcd_post-type-params', $post_type_params );
 		}
 
 		/**
@@ -122,7 +122,7 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 				'update_count_callback' => '_update_post_term_count'
 			);
 
-			return apply_filters( 'wpps_tag-taxonomy-params', $tag_taxonomy_params );
+			return apply_filters( 'wpcd_tag-taxonomy-params', $tag_taxonomy_params );
 		}
 
 		/**
@@ -132,7 +132,7 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 		 */
 		public static function add_meta_boxes() {
 			add_meta_box(
-				'wpps_example-box',
+				'wpcd_example-box',
 				'Example Box',
 				__CLASS__ . '::markup_meta_boxes',
 				self::POST_TYPE_SLUG,
@@ -153,15 +153,15 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 			$variables = array();
 
 			switch ( $box['id'] ) {
-				case 'wpps_example-box':
-					$variables['exampleBoxField'] = get_post_meta( $post->ID, 'wpps_example-box-field', true );
-					$view                         = 'wpps-cpt-example/metabox-example-box.php';
+				case 'wpcd_example-box':
+					$variables['exampleBoxField'] = get_post_meta( $post->ID, 'wpcd_example-box-field', true );
+					$view                         = 'wpcd-cpt-example/metabox-example-box.php';
 					break;
 
 				/*
-				case 'wpps_some-other-box':
-					$variables['someOtherField'] = get_post_meta( $post->ID, 'wpps_some-other-field', true );
-				 	$view                        = 'wpps-cpt-example/metabox-another-box.php';
+				case 'wpcd_some-other-box':
+					$variables['someOtherField'] = get_post_meta( $post->ID, 'wpcd_some-other-field', true );
+				 	$view                        = 'wpcd-cpt-example/metabox-another-box.php';
 					break;
 				*/
 
@@ -185,13 +185,13 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 		 */
 		public static function is_protected_meta( $protected, $meta_key, $meta_type ) {
 			switch( $meta_key ) {
-				case 'wpps_example-box':
-				case 'wpps_example-box2':
+				case 'wpcd_example-box':
+				case 'wpcd_example-box2':
 					$protected = true;
 					break;
 
-				case 'wpps_some-other-box':
-				case 'wpps_some-other-box2':
+				case 'wpcd_some-other-box':
+				case 'wpcd_some-other-box2':
 					$protected = false;
 					break;
 			}
@@ -235,17 +235,17 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 		 * @param array $new_values
 		 */
 		protected static function save_custom_fields( $post_id, $new_values ) {
-			if ( isset( $new_values[ 'wpps_example-box-field' ] ) ) {
+			if ( isset( $new_values[ 'wpcd_example-box-field' ] ) ) {
 				if ( true ) { // some business logic check
-					update_post_meta( $post_id, 'wpps_example-box-field', $new_values[ 'wpps_example-box-field' ] );
+					update_post_meta( $post_id, 'wpcd_example-box-field', $new_values[ 'wpcd_example-box-field' ] );
 				} else {
-					WordPress_Plugin_Skeleton::$notices->enqueue( 'Example of failing validation', 'error' );
+					WordPress_Content_Dialog::$notices->enqueue( 'Example of failing validation', 'error' );
 				}
 			}
 		}
 
 		/**
-		 * Defines the [wpps-cpt-shortcode] shortcode
+		 * Defines the [wpcd-cpt-shortcode] shortcode
 		 *
 		 * @mvc Controller
 		 *
@@ -253,10 +253,10 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 		 * return string
 		 */
 		public static function cpt_shortcode_example( $attributes ) {
-			$attributes = apply_filters( 'wpps_cpt-shortcode-example-attributes', $attributes );
+			$attributes = apply_filters( 'wpcd_cpt-shortcode-example-attributes', $attributes );
 			$attributes = self::validate_cpt_shortcode_example_attributes( $attributes );
 
-			return self::render_template( 'wpps-cpt-example/shortcode-cpt-shortcode-example.php', array( 'attributes' => $attributes ) );
+			return self::render_template( 'wpcd-cpt-example/shortcode-cpt-shortcode-example.php', array( 'attributes' => $attributes ) );
 		}
 
 		/**
@@ -275,7 +275,7 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 				$attributes['foo'] = $defaults['foo'];
 			}
 
-			return apply_filters( 'wpps_validate-cpt-shortcode-example-attributes', $attributes );
+			return apply_filters( 'wpcd_validate-cpt-shortcode-example-attributes', $attributes );
 		}
 
 		/**
@@ -291,7 +291,7 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 				'bar' => 'foo'
 			);
 
-			return apply_filters( 'wpps_default-cpt-shortcode-example-attributes', $attributes );
+			return apply_filters( 'wpcd_default-cpt-shortcode-example-attributes', $attributes );
 		}
 
 
@@ -371,5 +371,5 @@ if ( ! class_exists( 'WPPS_CPT_Example' ) ) {
 		protected function is_valid( $property = 'all' ) {
 			return true;
 		}
-	} // end WPPS_CPT_Example
+	} // end WPCD_CPT_Example
 }
