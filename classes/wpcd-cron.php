@@ -1,13 +1,13 @@
 <?php
 
-if ( ! class_exists( 'WPPS_Cron' ) ) {
+if ( ! class_exists( 'WPCD_Cron' ) ) {
 
 	/**
 	 * Handles cron jobs and intervals
 	 *
 	 * Note: Because WP-Cron only fires hooks when HTTP requests are made, make sure that an external monitoring service pings the site regularly to ensure hooks are fired frequently
 	 */
-	class WPPS_Cron extends WPPS_Module {
+	class WPCD_Cron extends WPCD_Module {
 		protected static $readable_properties  = array();
 		protected static $writeable_properties = array();
 
@@ -38,17 +38,17 @@ if ( ! class_exists( 'WPPS_Cron' ) ) {
 		 * @return array
 		 */
 		public static function add_custom_cron_intervals( $schedules ) {
-			$schedules[ 'wpps_debug' ] = array(
+			$schedules[ 'wpcd_debug' ] = array(
 				'interval' => 5,
 				'display'  => 'Every 5 seconds'
 			);
 
-			$schedules[ 'wpps_ten_minutes' ] = array(
+			$schedules[ 'wpcd_ten_minutes' ] = array(
 				'interval' => 60 * 10,
 				'display'  => 'Every 10 minutes'
 			);
 
-			$schedules[ 'wpps_example_interval' ] = array(
+			$schedules[ 'wpcd_example_interval' ] = array(
 				'interval' => 60 * 60 * 5,
 				'display'  => 'Every 5 hours'
 			);
@@ -66,9 +66,9 @@ if ( ! class_exists( 'WPPS_Cron' ) ) {
 
 			// Example job to fire between 1am and 3am
 			if ( (int) date( 'G', $now ) >= 1 && (int) date( 'G', $now ) <= 3 ) {
-				if ( ! get_transient( 'wpps_cron_example_timed_job' ) ) {
+				if ( ! get_transient( 'wpcd_cron_example_timed_job' ) ) {
 					//WPPS_CPT_Example::exampleTimedJob();
-					set_transient( 'wpps_cron_example_timed_job', true, 60 * 60 * 6 );
+					set_transient( 'wpcd_cron_example_timed_job', true, 60 * 60 * 6 );
 				}
 			}
 		}
@@ -98,8 +98,8 @@ if ( ! class_exists( 'WPPS_Cron' ) ) {
 		 * @mvc Controller
 		 */
 		public function register_hook_callbacks() {
-			add_action( 'wpps_cron_timed_jobs',  __CLASS__ . '::fire_job_at_time' );
-			add_action( 'wpps_cron_example_job', __CLASS__ . '::exampleJob' );
+			add_action( 'wpcd_cron_timed_jobs',  __CLASS__ . '::fire_job_at_time' );
+			add_action( 'wpcd_cron_example_job', __CLASS__ . '::exampleJob' );
 
 			add_action( 'init',                                               array( $this, 'init' ) );
 
