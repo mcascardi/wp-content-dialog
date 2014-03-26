@@ -1,11 +1,11 @@
 <?php
 
-if ( ! interface_exists( 'WPPS_Custom_Post_Type' ) ) {
+if ( ! interface_exists( 'WPCD_Custom_Post_Type' ) ) {
 
 	/**
 	 * Defines interface for custom post type classes
 	 */
-	interface WPPS_Custom_Post_Type {
+	interface WPCD_Custom_Post_Type {
 
 		/**
 		 * Registers the custom post type
