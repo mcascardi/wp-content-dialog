@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: WordPress Plugin Skeleton
-Plugin URI:  https://github.com/iandunn/WordPress-Plugin-Skeleton
-Description: The skeleton for an object-oriented/MVC WordPress plugin
-Version:     0.4a
-Author:      Ian Dunn
-Author URI:  http://iandunn.name
+Plugin Name: Content Dialog
+Plugin URI:  https://github.com/mcascardi/wp-content-dialog
+Description: The Content Dialog plugin
+Version:     0.1
+Author:      Matthew Cascardi
+Author URI:  http://contentdialog.com
 */
 
 /*
@@ -17,24 +17,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Access denied.' );
 }
 
-define( 'WPPS_NAME',                 'WordPress Plugin Skeleton' );
-define( 'WPPS_REQUIRED_PHP_VERSION', '5.3' );                          // because of get_called_class()
-define( 'WPPS_REQUIRED_WP_VERSION',  '3.1' );                          // because of esc_textarea()
+define( 'WPCD_NAME',                 'Content Dialog' );
+define( 'WPCD_REQUIRED_PHP_VERSION', '5.3' );                          // because of get_called_class()
+define( 'WPCD_REQUIRED_WP_VERSION',  '3.1' );                          // because of esc_textarea()
 
 /**
  * Checks if the system requirements are met
  *
  * @return bool True if system requirements are met, false if not
  */
-function wpps_requirements_met() {
+function wpcd_requirements_met() {
 	global $wp_version;
 	//require_once( ABSPATH . '/wp-admin/includes/plugin.php' );		// to get is_plugin_active() early
 
-	if ( version_compare( PHP_VERSION, WPPS_REQUIRED_PHP_VERSION, '<' ) ) {
+	if ( version_compare( PHP_VERSION, WPCD_REQUIRED_PHP_VERSION, '<' ) ) {
 		return false;
 	}
 
-	if ( version_compare( $wp_version, WPPS_REQUIRED_WP_VERSION, '<' ) ) {
+	if ( version_compare( $wp_version, WPCD_REQUIRED_WP_VERSION, '<' ) ) {
 		return false;
 	}
 
@@ -50,7 +50,7 @@ function wpps_requirements_met() {
 /**
  * Prints an error that the system requirements weren't met.
  */
-function wpps_requirements_error() {
+function wpcd_requirements_error() {
 	global $wp_version;
 
 	require_once( dirname( __FILE__ ) . '/views/requirements-error.php' );
@@ -60,21 +60,22 @@ function wpps_requirements_error() {
  * Check requirements and load main class
  * The main program needs to be in a separate file that only gets loaded if the plugin requirements are met. Otherwise older PHP installations could crash when trying to parse it.
  */
-if ( wpps_requirements_met() ) {
-	require_once( __DIR__ . '/classes/wpps-module.php' );
+if ( cd_requirements_met() ) {
+	require_once( __DIR__ . '/classes/wpcd-module.php' );
 	require_once( __DIR__ . '/classes/wordpress-plugin-skeleton.php' );
 	require_once( __DIR__ . '/includes/IDAdminNotices/id-admin-notices.php' );
-	require_once( __DIR__ . '/classes/wpps-custom-post-type.php' );
-	require_once( __DIR__ . '/classes/wpps-cpt-example.php' );
-	require_once( __DIR__ . '/classes/wpps-settings.php' );
-	require_once( __DIR__ . '/classes/wpps-cron.php' );
-	require_once( __DIR__ . '/classes/wpps-instance-class.php' );
+	require_once( __DIR__ . '/classes/wpcd-custom-post-type.php' );
+	require_once( __DIR__ . '/classes/wpcd-cpt-example.php' );
+	require_once( __DIR__ . '/classes/wpcd-settings.php' );
+	require_once( __DIR__ . '/classes/wpcd-cron.php' );
+	require_once( __DIR__ . '/classes/wpcd-instance-class.php' );
 
-	if ( class_exists( 'WordPress_Plugin_Skeleton' ) ) {
-		$GLOBALS['wpps'] = WordPress_Plugin_Skeleton::get_instance();
-		register_activation_hook(   __FILE__, array( $GLOBALS['wpps'], 'activate' ) );
-		register_deactivation_hook( __FILE__, array( $GLOBALS['wpps'], 'deactivate' ) );
+	if ( class_exists( 'WordPress_Content_Dialog' ) ) {
+		$GLOBALS['wpcd'] = WordPress_Content_Dialog::get_instance();
+		register_activation_hook(   __FILE__, array( $GLOBALS['wpcd'], 'activate' ) );
+		register_deactivation_hook( __FILE__, array( $GLOBALS['wpcd'], 'deactivate' ) );
 	}
 } else {
-	add_action( 'admin_notices', 'wpps_requirements_error' );
+	add_action( 'admin_notices', 'wpcd_requirements_error' );
 }
+
