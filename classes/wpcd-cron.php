@@ -67,7 +67,7 @@ if ( ! class_exists( 'WPCD_Cron' ) ) {
 			// Example job to fire between 1am and 3am
 			if ( (int) date( 'G', $now ) >= 1 && (int) date( 'G', $now ) <= 3 ) {
 				if ( ! get_transient( 'wpcd_cron_example_timed_job' ) ) {
-					//WPPS_CPT_Example::exampleTimedJob();
+					//WPCD_CPT_Example::exampleTimedJob();
 					set_transient( 'wpcd_cron_example_timed_job', true, 60 * 60 * 6 );
 				}
 			}
@@ -114,19 +114,19 @@ if ( ! class_exists( 'WPCD_Cron' ) ) {
 		 * @param bool $network_wide
 		 */
 		public function activate( $network_wide ) {
-			if ( wp_next_scheduled( 'wpps_cron_timed_jobs' ) === false ) {
+			if ( wp_next_scheduled( 'wpcd_cron_timed_jobs' ) === false ) {
 				wp_schedule_event(
 					current_time( 'timestamp' ),
-					'wpps_ten_minutes',
-					'wpps_cron_timed_jobs'
+					'wpcd_ten_minutes',
+					'wpcd_cron_timed_jobs'
 				);
 			}
 
-			if ( wp_next_scheduled( 'wpps_cron_example_job' ) === false ) {
+			if ( wp_next_scheduled( 'wpcd_cron_example_job' ) === false ) {
 				wp_schedule_event(
 					current_time( 'timestamp' ),
-					'wpps_example_interval',
-					'wpps_cron_example_job'
+					'wpcd_example_interval',
+					'wpcd_cron_example_job'
 				);
 			}
 		}
@@ -137,8 +137,8 @@ if ( ! class_exists( 'WPCD_Cron' ) ) {
 		 * @mvc Controller
 		 */
 		public function deactivate() {
-			wp_clear_scheduled_hook( 'wpps_timed_jobs' );
-			wp_clear_scheduled_hook( 'wpps_example_job' );
+			wp_clear_scheduled_hook( 'wpcd_timed_jobs' );
+			wp_clear_scheduled_hook( 'wpcd_example_job' );
 		}
 
 		/**
@@ -176,5 +176,5 @@ if ( ! class_exists( 'WPCD_Cron' ) ) {
 		protected function is_valid( $property = 'all' ) {
 			return true;
 		}
-	} // end WPPS_Cron
+	} // end WPCD_Cron
 }
