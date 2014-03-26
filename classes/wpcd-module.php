@@ -1,11 +1,11 @@
 <?php
 
-if ( ! class_exists( 'WPPS_Module' ) ) {
+if ( ! class_exists( 'WPCD_Module' ) ) {
 
 	/**
 	 * Abstract class to define/implement base methods for all module classes
 	 */
-	abstract class WPPS_Module {
+	abstract class WPCD_Module {
 		private static $instances = array();
 
 
@@ -95,7 +95,7 @@ if ( ! class_exists( 'WPPS_Module' ) ) {
 			if ( ! $template_path ) {
 				$template_path = dirname( __DIR__ ) . '/views/' . $default_template_path;
 			}
-			$template_path = apply_filters( 'wpps_template_path', $template_path );
+			$template_path = apply_filters( 'wpcd_template_path', $template_path );
 
 			if ( is_file( $template_path ) ) {
 				extract( $variables );
@@ -107,7 +107,7 @@ if ( ! class_exists( 'WPPS_Module' ) ) {
 					require_once( $template_path );
 				}
 
-				$template_content = apply_filters( 'wpps_template_content', ob_get_clean(), $default_template_path, $template_path, $variables );
+				$template_content = apply_filters( 'wpcd_template_content', ob_get_clean(), $default_template_path, $template_path, $variables );
 			} else {
 				$template_content = '';
 			}
@@ -175,5 +175,5 @@ if ( ! class_exists( 'WPPS_Module' ) ) {
 		 * @return bool
 		 */
 		abstract protected function is_valid( $property = 'all' );
-	} // end WPPS_Module
+	} // end WPCD_Module
 }
