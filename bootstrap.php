@@ -2,7 +2,7 @@
 /*
 Plugin Name: Content Dialog
 Plugin URI:  https://github.com/mcascardi/wp-content-dialog
-Description: The Content Dialog plugin
+Description: A plugin for installing Content Dialog on your WordPress site
 Version:     0.1
 Author:      Matthew Cascardi
 Author URI:  http://contentdialog.com
@@ -60,9 +60,9 @@ function wpcd_requirements_error() {
  * Check requirements and load main class
  * The main program needs to be in a separate file that only gets loaded if the plugin requirements are met. Otherwise older PHP installations could crash when trying to parse it.
  */
-if ( cd_requirements_met() ) {
+if ( wpcd_requirements_met() ) {
 	require_once( __DIR__ . '/classes/wpcd-module.php' );
-	require_once( __DIR__ . '/classes/wordpress-plugin-skeleton.php' );
+	require_once( __DIR__ . '/classes/wordpress-content-dialog.php' );
 	require_once( __DIR__ . '/includes/IDAdminNotices/id-admin-notices.php' );
 	require_once( __DIR__ . '/classes/wpcd-custom-post-type.php' );
 	require_once( __DIR__ . '/classes/wpcd-cpt-example.php' );

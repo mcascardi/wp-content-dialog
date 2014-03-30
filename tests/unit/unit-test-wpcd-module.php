@@ -1,33 +1,33 @@
 <?php
 
 require_once( WP_PLUGIN_DIR . '/simpletest-for-wordpress/WpSimpleTest.php' );
-require_once( dirname( dirname( __DIR__ ) ) . '/classes/wpps-module.php' );
+require_once( dirname( dirname( __DIR__ ) ) . '/classes/wpcd-module.php' );
 
 /**
- * Unit tests for the WPPS_Module class
+ * Unit tests for the WPCD_Module class
  * Uses the SimpleTest For WordPress plugin
  *
  * @link http://wordpress.org/extend/plugins/simpletest-for-wordpress/
  */
-if ( ! class_exists( 'UnitTestWPPS_Module' ) ) {
-	class UnitTestWPPS_Module extends UnitTestCase {
+if ( ! class_exists( 'UnitTestWPCD_Module' ) ) {
+	class UnitTestWPCD_Module extends UnitTestCase {
 		/*
 		 * get_instance()
 		 */
 		public function test_get_instance() {
 			// Two instances of the same module
-			$first_instance = WPPSChildClass::get_instance();
+			$first_instance = WPCDChildClass::get_instance();
 			$first_instance->init();
 			$first_instance->foo = 'first';
 
-			$second_instance = WPPSChildClass::get_instance();
+			$second_instance = WPCDChildClass::get_instance();
 			$second_instance->init();
 			$second_instance->foo = 'second';
 
 			$this->assertEqual( $first_instance->foo, $second_instance->foo );
 
 			// Two different modules
-			$separate_module = WPPSAnotherChildClass::get_instance();
+			$separate_module = WPCDAnotherChildClass::get_instance();
 			$separate_module->init();
 			$this->assertNotEqual( $second_instance->foo, $separate_module->foo );
 		}
@@ -36,7 +36,7 @@ if ( ! class_exists( 'UnitTestWPPS_Module' ) ) {
 		 * __get()
 		 */
 		public function test_magic_get() {
-			$child = WPPSChildClass::get_instance();
+			$child = WPCDChildClass::get_instance();
 
 			// Readable
 			$child->init();
@@ -69,7 +69,7 @@ if ( ! class_exists( 'UnitTestWPPS_Module' ) ) {
 		 * __set()
 		 */
 		public function test_magic_set() {
-			$child = WPPSChildClass::get_instance();
+			$child = WPCDChildClass::get_instance();
 
 			// Writable
 			$child->init();
@@ -97,12 +97,12 @@ if ( ! class_exists( 'UnitTestWPPS_Module' ) ) {
 				}
 			}
 		}
-	} // end UnitTestWPPS_Module
+	} // end UnitTestWPCD_Module
 }
 
 // Mock up a child class
-if ( ! class_exists( 'WPPSChildClass' ) ) {
-	class WPPSChildClass extends WPPS_Module {
+if ( ! class_exists( 'WPCDChildClass' ) ) {
+	class WPCDChildClass extends WPCD_Module {
 		protected $foo, $bar, $charlie;
 		protected static $readable_properties = array( 'foo', 'bar' );
 		protected static $writeable_properties = array( 'foo' );
@@ -137,8 +137,8 @@ if ( ! class_exists( 'WPPSChildClass' ) ) {
 }
 
 // Mock up a child class
-if ( ! class_exists( 'WPPSAnotherChildClass' ) ) {
-	class WPPSAnotherChildClass extends WPPS_Module {
+if ( ! class_exists( 'WPCDAnotherChildClass' ) ) {
+	class WPCDAnotherChildClass extends WPCD_Module {
 		protected $delta, $echo, $foo;
 		protected static $readable_properties = array( 'delta', 'foo' );
 		protected static $writeable_properties = array( 'foo' );

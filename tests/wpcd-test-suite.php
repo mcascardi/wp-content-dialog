@@ -7,14 +7,14 @@
  *
  * @link http://wordpress.org/extend/plugins/simpletest-for-wordpress/
  */
-if ( ! class_exists( 'WPPSTestSuite' ) ) {
-	class WPPSTestSuite extends TestSuite {
+if ( ! class_exists( 'WPCDTestSuite' ) ) {
+	class WPCDTestSuite extends TestSuite {
 		function __construct() {
 			parent::__construct();
 
-			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpps-module.php' );
-			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpps-settings.php' );
-			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpps-instance-class.php' );
+			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpcd-module.php' );
+			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpcd-settings.php' );
+			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpcd-instance-class.php' );
 		}
 
 		/**
@@ -33,7 +33,7 @@ if ( ! class_exists( 'WPPSTestSuite' ) ) {
 
 			return $method;
 		}
-	} // end WPPSUnitTestSuite
+	} // end WPCDUnitTestSuite
 }
 
 ?>

@@ -5,7 +5,7 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
 	/**
 	 * Main / front controller class
 	 *
-	 * WordPress_Plugin_Skeleton is an object-oriented/MVC base for building WordPress plugins
+	 * WordPress_Content_Dialog is an object-oriented/MVC WordPress plugin to make installing Content Dialogs on your website easy
 	 */
 	class WordPress_Content_Dialog extends WPCD_Module {
 		public static $notices;                              // Needs to be static so static methods can call enqueue notices. Needs to be public so other modules can enqueue notices.
@@ -49,8 +49,8 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
 		 */
 		public static function load_resources() {
 			wp_register_script(
-				self::PREFIX . 'wordpress-plugin-skeleton',
-				plugins_url( 'javascript/wordpress-plugin-skeleton.js', dirname( __FILE__ ) ),
+				self::PREFIX . 'wordpress-content-dialog',
+				plugins_url( 'javascript/wordpress-content-dialog.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::VERSION,
 				true
@@ -230,5 +230,5 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
 		protected function is_valid( $property = 'all' ) {
 			return true;
 		}
-	} // end WordPress_Plugin_Skeleton
+	} // end WordPress_Content_Dialog
 }
