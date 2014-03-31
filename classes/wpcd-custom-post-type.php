@@ -57,5 +57,5 @@ if ( ! interface_exists( 'WPCD_Custom_Post_Type' ) ) {
 		 * @return bool
 		 */
 		public static function is_protected_meta( $protected, $meta_key, $meta_type );
-	} // end WPPS_Custom_Post_Type
+	} // end WPCD_Custom_Post_Type
 }

@@ -84,7 +84,7 @@ if ( ! class_exists( 'WPCD_Cron' ) ) {
 		public static function exampleJob() {
 			// Do stuff
 
-			WordPress_Plugin_Skeleton::$notices->enqueue( __METHOD__ . ' cron job fired.' );
+			WordPress_Content_Dialog::$notices->enqueue( __METHOD__ . ' cron job fired.' );
 		}
 
 

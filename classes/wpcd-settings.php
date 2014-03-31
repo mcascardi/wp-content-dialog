@@ -309,7 +309,7 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
 			$new_settings = shortcode_atts( $this->settings, $new_settings );
 
 			if ( ! is_string( $new_settings['db-version'] ) ) {
-				$new_settings['db-version'] = WordPress_Plugin_Skeleton::VERSION;
+				$new_settings['db-version'] = WordPress_Content_Dialog::VERSION;
 			}
 
 

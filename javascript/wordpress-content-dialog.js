@@ -1,25 +1,25 @@
 /**
  * Wrapper function to safely use $
  */
-function wppsWrapper( $ ) {
-	var wpps = {
+function wpcdWrapper( $ ) {
+	var wpcd = {
 
 		/**
 		 * Main entry point
 		 */
 		init: function () {
-			wpps.prefix      = 'wpps_';
-			wpps.templateURL = $( '#template-url' ).val();
-			wpps.ajaxPostURL = $( '#ajax-post-url' ).val();
+			wpcd.prefix      = 'wpcd_';
+			wpcd.templateURL = $( '#template-url' ).val();
+			wpcd.ajaxPostURL = $( '#ajax-post-url' ).val();
 
-			wpps.registerEventHandlers();
+			wpcd.registerEventHandlers();
 		},
 
 		/**
 		 * Registers event handlers
 		 */
 		registerEventHandlers: function () {
-			$( '#example-container' ).children( 'a' ).click( wpps.exampleHandler );
+			$( '#example-container' ).children( 'a' ).click( wpcd.exampleHandler );
 		},
 
 		/**
@@ -32,10 +32,10 @@ function wppsWrapper( $ ) {
 
 			event.preventDefault();
 		}
-	}; // end wpps
+	}; // end wpcd
 
-	$( document ).ready( wpps.init );
+	$( document ).ready( wpcd.init );
 
-} // end wppsWrapper()
+} // end wpcdWrapper()
 
-wppsWrapper( jQuery );
+wpcdWrapper( jQuery );
