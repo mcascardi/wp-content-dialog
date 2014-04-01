@@ -1,30 +1,31 @@
 <?php
 /*
- * Basic Section
+ * Main Section
  */
 ?>
 
-<?php if ( 'wpcd_field-example1' == $field['label_for'] ) : ?>
+<?php if ( 'wpcd_field-url' == $field['label_for'] ) : ?>
 
-	<input id="<?php esc_attr_e( 'wpcd_settings[basic][field-example1]' ); ?>" name="<?php esc_attr_e( 'wpcd_settings[basic][field-example1]' ); ?>" class="regular-text" value="<?php esc_attr_e( $settings['basic']['field-example1'] ); ?>" />
-	<span class="example"> Example value</span>
+	<input id="<?php esc_attr_e( 'wpcd_settings[main][field-url]' ); ?>" name="<?php esc_attr_e( 'wpcd_settings[main][field-url]' ); ?>" class="regular-text" value="<?php esc_attr_e( $settings['main']['field-url'] ); ?>" />
 
-<?php endif; ?>
+<?php elseif ( 'wpcd_field-type' == $field['label_for'] ) : ?>
 
-
-<?php
-/*
- * Advanced Section
- */
-?>
-
-<?php if ( 'wpcd_field-example2' == $field['label_for'] ) : ?>
-
-	<textarea id="<?php esc_attr_e( 'wpcd_settings[advanced][field-example2]' ); ?>" name="<?php esc_attr_e( 'wpcd_settings[advanced][field-example2]' ); ?>" class="large-text"><?php echo esc_textarea( $settings['advanced']['field-example2'] ); ?></textarea>
-	<p class="description">This is an example of a longer explanation.</p>
-
-<?php elseif ( 'wpcd_field-example3' == $field['label_for'] ) : ?>
-
-	<p>Another example</p>
+  <select id="<?php esc_attr_e('wpcd_settings[main][field-type]'); ?>" name="<?php esc_attr_e('wpcd_settings[main][field-type]'); ?>"><option value=""></option>
+	   <?php
+	   
+	   foreach ( array(
+			   'fancybox' => 'fancyBox', 
+			   'thickbox' => 'thickBox',
+			   'prettyphoto' => 'prettyPhoto',
+			   'facebox' => 'faceBox')
+		     as $key => $val) { 
+	   
+	   echo "<option value='{$key}' "
+	   . (($settings['main']['field-type'] == $key) ? "selected='selected'" : '' ) 
+	   . ">{$val}</option>";
+	   
+	 }
+	   ?>
+  </select>
 
 <?php endif; ?>

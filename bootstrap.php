@@ -64,10 +64,9 @@ if ( wpcd_requirements_met() ) {
 	require_once( __DIR__ . '/classes/wpcd-module.php' );
 	require_once( __DIR__ . '/classes/wordpress-content-dialog.php' );
 	require_once( __DIR__ . '/includes/IDAdminNotices/id-admin-notices.php' );
-	require_once( __DIR__ . '/classes/wpcd-custom-post-type.php' );
-	require_once( __DIR__ . '/classes/wpcd-cpt-example.php' );
+
 	require_once( __DIR__ . '/classes/wpcd-settings.php' );
-	require_once( __DIR__ . '/classes/wpcd-cron.php' );
+
 	require_once( __DIR__ . '/classes/wpcd-instance-class.php' );
 
 	if ( class_exists( 'WordPress_Content_Dialog' ) ) {
