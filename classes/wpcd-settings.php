@@ -57,21 +57,24 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
      * @mvc Controller
      */
     public function register_hook_callbacks() {
-      add_action( 'admin_menu',               __CLASS__ . '::register_settings_pages' );
-      add_action( 'show_user_profile',        __CLASS__ . '::add_user_fields' );
-      add_action( 'edit_user_profile',        __CLASS__ . '::add_user_fields' );
-      add_action( 'personal_options_update',  __CLASS__ . '::save_user_fields' );
-      add_action( 'edit_user_profile_update', __CLASS__ . '::save_user_fields' );
 
-      add_action( 'init',                     array( $this, 'init' ) );
-      add_action( 'admin_init',               array( $this, 'register_settings' ) );
+      
+      add_action( 'admin_menu', __CLASS__ . '::register_settings_pages' );
+      add_action( 'show_user_profile', __CLASS__ . '::add_user_fields' );
+      add_action( 'edit_user_profile', __CLASS__ . '::add_user_fields' );
+      //      add_action( 'personal_options_update', __CLASS__ . '::save_user_fields' );
+      //       add_action( 'edit_user_profile_update', __CLASS__ . '::save_user_fields' );
+
+      add_action( 'init', array( $this, 'init' ) );
+      add_action( 'admin_init', array( $this, 'register_settings' ) );
 
       add_filter(
-		 'plugin_action_links_' . plugin_basename( dirname( __DIR__ ) ) . '/bootstrap.php',
+		 'plugin_action_links_' . plugin_basename(dirname( __DIR__ )) 
+		 . '/bootstrap.php',
 		 __CLASS__ . '::add_plugin_action_links'
 		 );
     }
-
+    
     /**
      * Prepares site to use the plugin during activation
      *
@@ -144,14 +147,27 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
      * @return array
      */
     protected static function get_default_settings() {
-      $basic = array(
-		     'field-url' => '',
-		     'field-type' => 'prettyphoto'
-		     );
+      $main = array(
+		    'url' => '',
+		    'overlay' => 'thickbox',
+		    'width' => 800,
+		    'height' => '100%',
+		    'cta' => '',
+		    'alt' => ''
+		    );
+      
+      $thick = array();
 
+      $pretty = array('theme' => 'pp_default', 'social_tools' => '');
+    
+      $fancy = array();
+    
       return array(
-		   'db-version' => '0',
-		   'main'      => $main
+		   'db-version' => '0.3',
+		   'main' => $main,
+		   'thickbox' => $thick,
+		   'prettyphoto' => $pretty,
+		   'fancybox' => $fancy
 		   );
     }
 
@@ -182,7 +198,7 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
     public static function add_plugin_action_links( $links ) {
       $helpLink = '<a href="https://github.com/mcascardi/wp-content-dialog/wiki">Help</a>';
       array_unshift( $links, $helpLink);
-      array_unshift( $links, '<a href="options-general.php?page=' . 'wpps_settings">Settings</a>' );
+      array_unshift( $links, '<a href="options-general.php?page=' . 'wpcd_settings">Settings</a>' );
       return $links;
     }
 
@@ -209,7 +225,7 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
      */
     public static function markup_settings_page() {
       if ( current_user_can( self::REQUIRED_CAPABILITY ) ) {
-	echo self::render_template( 'wpcd-settings/page-settings.php' );
+	echo self::render_template( 'settings/page-settings.php' );
       } else {
 	wp_die( 'Access denied.' );
       }
@@ -231,25 +247,26 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
 			   'wpcd_settings'
 			   );
 
-      add_settings_field(
-			 'wpcd_field-url',
-			 'Dialog URL:',
-			 array( $this, 'markup_fields' ),
-			 'wpcd_settings',
-			 'wpcd_section-main',
-			 array( 'label_for' => 'wpcd_field-url' )
-			 );
-
+      $mainFields = array(
+			  'url' => 'Dialog URL:',
+			  'overlay' => 'Overlay box type:',
+			  'width' => 'Width:',
+			  'height' => 'Height:',
+			  'cta' => 'CTA image URL:',
+			  'alt' => 'CTA alt text:'
+			  );
       
-      add_settings_field(
-			 'wpcd_field-type',
-			 'Overlay box type:',
-			 array( $this, 'markup_fields' ),
-			 'wpcd_settings',
-			 'wpcd_section-main',
-			 array( 'label_for' => 'wpcd_field-type' )
-			 );
+      foreach($mainFields as $k => $label) { 
+	add_settings_field(
+			   'wpcd_'.$k,
+			   $label,
+			   array( $this, 'markup_fields' ),
+			   'wpcd_settings',
+			   'wpcd_section-main',
+			   array( 'label_for' => 'wpcd_'.$k )
+			   );
 
+      }
 
       // The settings container
       register_setting(
@@ -268,7 +285,7 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
      */
     public static function markup_section_headers( $section ) {
       echo self::render_template(
-				 'wpcd-settings/page-settings-section-headers.php', 
+				 'settings/page-settings-section-headers.php', 
 				 array( 'section' => $section ), 'always' 
 				 );
     }
@@ -282,17 +299,33 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
      */
     public function markup_fields( $field ) {
       switch ( $field['label_for'] ) {
-      case 'wpcd_field-url':
+      case 'wpcd_url':
 	// Do any extra processing here
 	break;
       
-      case 'wpcd_field-type':
+      case 'wpcd_overlay':
+	// Do any extra processing here
+	break;
+
+      case 'wpcd_cta':
+	// Do any extra processing here
+	break;
+
+      case 'wpcd_alt':
+	// Do any extra processing here
+	break;
+
+      case 'wpcd_height':
+	// Do any extra processing here
+	break;
+
+      case 'wpcd_width':
 	// Do any extra processing here
 	break;
       }
       
       echo self::render_template(
-				 'wpcd-settings/page-settings-fields.php', 
+				 'settings/page-settings-fields.php', 
 				 array('settings' => $this->settings, 'field' => $field), 
 				 'always'
 				 );
@@ -309,7 +342,6 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
      */
     public function validate_settings( $new_settings ) {
       $new_settings = shortcode_atts( $this->settings, $new_settings );
-
       if ( ! is_string( $new_settings['db-version'] ) ) {
 	$new_settings['db-version'] = WordPress_Content_Dialog::VERSION;
       }
@@ -320,9 +352,9 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
        */
       $urlFieldError = "Dialog URL field must be a valid URL";
       $urlPattern = '%^((https?://)|(www\.))([a-z0-9-].?)+(:[0-9]+)?(/.*)?$%i';
-      if ( preg_match($urlPattern, $new_settings['main']['field-url']) !== 1 ) {
+      if ( preg_match($urlPattern, $new_settings['main']['url']) !== 1 ) {
 	WordPress_Content_Dialog::$notices->enqueue($urlFieldError, 'error' );
-	$new_settings['main']['field-url'] = self::$default_settings['main']['field-url'];
+	$new_settings['main']['url'] = self::$default_settings['main']['url'];
       }
 
       return $new_settings;

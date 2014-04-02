@@ -5,7 +5,8 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
   /**
    * Main / front controller class
    *
-   * WordPress_Content_Dialog is an object-oriented/MVC WordPress plugin to make installing Content Dialogs on your website easy
+   * WordPress_Content_Dialog is an object-oriented/MVC frontend WordPress
+   * plugin to make installing Content Dialogs on your website easy
    */
   class WordPress_Content_Dialog extends WPCD_Module {
     // Needs to be static so static methods can call enqueue
@@ -19,7 +20,7 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
     protected static $writeable_properties = array();
     protected $modules;
 
-    const VERSION    = '0.1';
+    const VERSION    = '0.2';
     const PREFIX     = 'wpcd_';
     const DEBUG_MODE = false;
 
@@ -35,7 +36,7 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
      */
     protected function __construct() {
       $this->register_hook_callbacks();
-      $this->modules = array('WPCD_Settings'    => WPCD_Settings::get_instance());
+      $this->modules = array('WPCD_Settings' => WPCD_Settings::get_instance());
     }
 
 
@@ -49,6 +50,49 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
      * @mvc Controller
      */
     public static function load_resources() {
+
+      // $style = array('handle'  => '', 'src' => '', 'deps' =>, 'ver' => '', 'media' => 'all');
+      // $script = array('handle' => '', 'src' => '', 'deps' =>, 'ver' => '', 'in_footer' => false);
+
+      $fancyboxJS = array(
+			  'handle' => 'cdn-fancybox-js',
+			  'src' => '//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js',
+			  'deps' => array('jquery'), 'ver' => '2.1.5', 'in_footer' => false
+			  );
+      
+      $fancyboxCSS = array(
+			   'handle'  => 'cdn-fancybox-css',
+			   'src' => '//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.css', 
+			   'deps' => '', 'ver' => '2.1.5', 'media' => 'all'
+			   );
+
+      $CDNJS[] = $fancyboxJS;
+      $CDNCSS[] = $fancyboxCSS;
+      
+      $prettyphotoJS = array(
+			     'handle' => 'cdn-prettyphoto-js',
+			     'src' => '//cdn.jsdelivr.net/prettyphoto/3.1.5/js/jquery.prettyPhoto.js',
+			     'deps' => array('jquery'), 'ver' => '3.1.5', 'in_footer' => false
+			     );
+
+      $prettyphotoCSS = array(
+			      'handle' => 'cdn-prettyphoto-css',
+			      'src' => '//cdn.jsdelivr.net/prettyphoto/3.1.5/css/prettyPhoto.css',
+			      'deps' => '', 'ver' => '3.1.5', 'media' => 'all'
+ 			      );
+      
+      $CDNJS[] = $prettyphotoJS;
+      $CDNCSS[] = $prettyphotoCSS;
+            
+      foreach ($CDNJS as $js) {
+	wp_register_script($js['handle'], $js['src'], $js['deps'], $js['ver'], $js['in_footer']);
+      }
+      foreach ($CDNCSS as $css) {
+	wp_register_style($css['handle'], $css['src'], $css['deps'], $css['ver'], $css['media']);
+      }
+      
+
+      // Local plugin files
       wp_register_script(
 			 self::PREFIX . 'wordpress-content-dialog',
 			 plugins_url(
@@ -68,10 +112,32 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
 			'all'
 			);
 
+
+      // Enqueue as needed
       if ( is_admin() ) {
 	wp_enqueue_style( self::PREFIX . 'admin' );
       } else {
-	wp_enqueue_script( self::PREFIX . 'wordpress-content-dialog' );
+	      
+	$opts = get_option('wpcd_settings');
+
+	switch($opts['main']['overlay']) {
+	case 'thickbox' :
+	  add_thickbox();
+	  break;
+	
+	case 'fancybox' :
+	  wp_enqueue_style('cdn-fancybox-css');
+	  wp_enqueue_script('cdn-fancybox-js');
+	  break;
+	
+	case 'prettyphoto' :
+	  wp_enqueue_style('cdn-prettyphoto-css');
+	  wp_enqueue_script('cdn-prettyphoto-js');
+	  break;
+
+	}
+
+	//	wp_enqueue_script( self::PREFIX . 'wordpress-content-dialog' );
       }
     }
 
@@ -89,7 +155,6 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
       // W3 Total Cache
       if ( class_exists( 'W3_Plugin_TotalCacheAdmin' ) ) {
 	$w3_total_cache = w3_instance( 'W3_Plugin_TotalCacheAdmin' );
-
 	if ( method_exists( $w3_total_cache, 'flush_all' ) ) {
 	  $w3_total_cache->flush_all();
 	}
@@ -177,9 +242,11 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
       add_action( 'wpmu_new_blog',         __CLASS__ . '::activate_new_site' );
       add_action( 'wp_enqueue_scripts',    __CLASS__ . '::load_resources' );
       add_action( 'admin_enqueue_scripts', __CLASS__ . '::load_resources' );
-
+      add_shortcode('content-dialog', array('WPCD_Shortcode', 'display'));
       add_action( 'init',                  array( $this, 'init' ) );
       add_action( 'init',                  array( $this, 'upgrade' ), 11 );
+      
+      add_action('wp_footer', array('WordPress_Content_Dialog', 'print_js_overlay_init'));
     }
 
     /**
@@ -209,10 +276,14 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
      * @param string $db_version
      */
     public function upgrade( $db_version = 0 ) {
-      if ( version_compare( $this->modules['WPCD_Settings']->settings['db-version'], self::VERSION, '==' ) ) {
+      if (version_compare(
+			  $this->modules['WPCD_Settings']->settings['db-version'], 
+			  self::VERSION, '==' 
+			  )
+	  ) {
 	return;
       }
-
+      
       foreach ( $this->modules as $module ) {
 	$module->upgrade( $this->modules['WPCD_Settings']->settings['db-version'] );
       }
@@ -232,5 +303,44 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
     protected function is_valid( $property = 'all' ) {
       return true;
     }
+    
+    
+    public function print_js_overlay_init() {
+      $opts = get_option('wpcd_settings');
+      switch ($opts['main']['overlay']) {
+      case 'thickbox' :
+	$initJS = <<<JS
+	  /* ThickBox attaches to .thickbox elements automatically */
+JS;
+
+	break;
+
+      case 'prettyphoto':
+       	$opts['prettyphoto']['social_tools'] = '';
+	$jsOpts = json_encode($opts['prettyphoto']);
+	
+	$initJS = <<<JS
+	  jQuery(function(){
+	      jQuery('#content_dialog').prettyPhoto({$jsOpts});
+	    });
+JS;
+
+	break;
+
+      case 'fancybox':
+	$jsOpts = json_encode($opts['fancybox']);
+	$initJS = <<<JS
+	  jQuery(function(){
+	      jQuery('#content_dialog').fancybox({$jsOpts});
+	    });
+JS;
+
+	break;
+		
+      }
+      
+      echo "<script type='text/javascript'>\n{$initJS}\n</script>";
+    }
+    
   } // end WordPress_Content_Dialog
 }

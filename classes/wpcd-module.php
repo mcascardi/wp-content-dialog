@@ -78,17 +78,22 @@ if ( ! class_exists( 'WPCD_Module' ) ) {
     /**
      * Render a template
      *
-     * Allows parent/child themes to override the markup by placing the a file named basename( $default_template_path ) in their root folder,
-     * and also allows plugins or themes to override the markup by a filter. Themes might prefer that method if they place their templates
-     * in sub-directories to avoid cluttering the root folder. In both cases, the theme/plugin will have access to the variables so they can
-     * fully customize the output.
+     * Allows parent/child themes to override the markup by placing
+     * the a file named basename( $default_template_path ) in their
+     * root folder, and also allows plugins or themes to override the
+     * markup by a filter. Themes might prefer that method if they
+     * place their templates in sub-directories to avoid cluttering
+     * the root folder. In both cases, the theme/plugin will have
+     * access to the variables so they can fully customize the output.
      *
      * @mvc @model
      *
-     * @param  string $default_template_path The path to the template, relative to the plugin's `views` folder
-     * @param  array  $variables             An array of variables to pass into the template's scope, indexed with the variable name so that it can be extract()-ed
-     * @param  string $require               'once' to use require_once() | 'always' to use require()
-     * @return string
+     * @param string $default_template_path The path to the template,
+     * relative to the plugin's `views` folder @param array $variables
+     * An array of variables to pass into the template's scope,
+     * indexed with the variable name so that it can be extract()-ed
+     * @param string $require 'once' to use require_once() | 'always'
+     * to use require() @return string
      */
     protected static function render_template( $default_template_path = false, $variables = array(), $require = 'once' ) {
       $template_path = locate_template( basename( $default_template_path ) );
@@ -116,10 +121,53 @@ if ( ! class_exists( 'WPCD_Module' ) ) {
     }
 
 
+    
+    /**
+     * replace Tpl / Named sprintf()
+     * 
+     * Replaces variables using the %(varname) format in template
+     * string by using vsprintf and a regex to match the variable
+     * names
+     *
+     * @param string $format Format
+     * @param array  $args   Associative array with arguments
+     * 
+     * @returns string
+     */
+    function replaceTpl($format, array $args) {
+      $matches = array();
+      $values = array();
+ 
+      // Find all keys
+      preg_match_all('/%\((.*?)\)/', $format, $matches, PREG_SET_ORDER);
+ 
+      foreach ($matches as $match) {
+        // Check if the key is in the args
+        if(isset($args[$match[1]]) === false) {
+	  throw new \RuntimeException(
+				      sprinft('Missing key "%s"', $match[1])
+				      );
+        }
+        // Add value to array for vsprintf
+        $values[] = $args[$match[1]];
+      }
+ 
+      // Remove all keys from the format string 
+      $format = preg_replace('/%\((.*?)\)/', '%', $format);
+ 
+      // Now we can execute a normal vsprintf 
+      return vsprintf($format, $values);
+    }
+
+
     /*
      * Abstract methods
+     *
+     * Each method below defines what needs to be implemented in any
+     * class that extents this one
      */
 
+    
     /**
      * Constructor
      *
@@ -128,7 +176,8 @@ if ( ! class_exists( 'WPCD_Module' ) ) {
     abstract protected function __construct();
 
     /**
-     * Prepares sites to use the plugin during single or network-wide activation
+     * Prepares sites to use the plugin during single or network-wide
+     * activation
      *
      * @mvc Controller
      *
@@ -171,8 +220,8 @@ if ( ! class_exists( 'WPCD_Module' ) ) {
      *
      * @mvc Model
      *
-     * @param string $property An individual property to check, or 'all' to check all of them
-     * @return bool
+     * @param string $property An individual property to check, or
+     * 'all' to check all of them @return bool
      */
     abstract protected function is_valid( $property = 'all' );
   } // end WPCD_Module
