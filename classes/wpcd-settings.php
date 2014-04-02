@@ -60,11 +60,6 @@ if ( ! class_exists( 'WPCD_Settings' ) ) {
 
       
       add_action( 'admin_menu', __CLASS__ . '::register_settings_pages' );
-      add_action( 'show_user_profile', __CLASS__ . '::add_user_fields' );
-      add_action( 'edit_user_profile', __CLASS__ . '::add_user_fields' );
-      //      add_action( 'personal_options_update', __CLASS__ . '::save_user_fields' );
-      //       add_action( 'edit_user_profile_update', __CLASS__ . '::save_user_fields' );
-
       add_action( 'init', array( $this, 'init' ) );
       add_action( 'admin_init', array( $this, 'register_settings' ) );
 

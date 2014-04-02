@@ -20,7 +20,7 @@ if ( ! class_exists( 'WordPress_Content_Dialog' ) ) {
     protected static $writeable_properties = array();
     protected $modules;
 
-    const VERSION    = '0.2';
+    const VERSION    = '0.3';
     const PREFIX     = 'wpcd_';
     const DEBUG_MODE = false;
 
@@ -321,7 +321,7 @@ JS;
 	
 	$initJS = <<<JS
 	  jQuery(function(){
-	      jQuery('#content_dialog').prettyPhoto({$jsOpts});
+	      jQuery('.content_dialog').prettyPhoto({$jsOpts});
 	    });
 JS;
 
@@ -331,7 +331,7 @@ JS;
 	$jsOpts = json_encode($opts['fancybox']);
 	$initJS = <<<JS
 	  jQuery(function(){
-	      jQuery('#content_dialog').fancybox({$jsOpts});
+	      jQuery('.content_dialog').fancybox({$jsOpts});
 	    });
 JS;
 

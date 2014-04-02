@@ -71,41 +71,7 @@ if ( ! class_exists( 'WPCD_Shortcode' ) ) {
  
     
     function display() { 
-      
-      $opts = get_option('wpcd_settings');
-      $attrs = self::getLinkAttributes(
-				       $opts['main']['url'],
-				       $opts['main']['overlay'],
-				       $opts['main']['width'],
-				       $opts['main']['height']
-				       ); 
-      return <<<HTML
-	<a {$attrs}><img src="{$opts['main']['cta']}" alt="{$opts['main']['alt']}"></a>
-HTML;
-
-    }
-
-    function getLinkAttributes($url, $type, $width, $height) {
-      $attrs = array();
-      switch($type) {  	
-      case 'thickbox' :
-	$q = "TB_ifame=true&width={$width}&height={$height}";
-	$attrs[]  = "href='{$url}?{$q}'";
-	$attrs[]  = "class='thickbox'";
-	break;
-      case 'fancybox' :
-	$attrs[] = "href='{$url}'";
-	$attrs[] = "class='fancybox fancybox.iframe'";
-	break;
-      case 'prettyphoto' :
-	$q = "iframe=true&width={$width}&height={$height}";
-	$attrs[] = "href='{$url}?{$q}'";
-	$attrs[] = "rel='prettyPhoto[iframes]'";
-	break;
-      }
-      
-      $attrs[] = "id='content_dialog'";
-      return implode(' ', $attrs);
+      return WPCD_Core::getCtaCode(get_option('wpcd_settings'));
     }
   }
 }
